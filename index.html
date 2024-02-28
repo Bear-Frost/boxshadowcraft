@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Essential Meta Tags -->
+    <meta name="title" content="Box Shadow Craft: Live Box Shadow Generator & Preview Tool">
+    <meta name="description" content="Box Shadow Craft: Tweak box shadows live. Get instant previews & code. Simplify your design process!">
+    <meta name="keywords" content="Box Shadow Editor, Box Shadow Editor, CSS Box Shadow, Live Box Shadow Generator">
+    <meta name="robots" content="index, follow">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="language" content="English">
+    <meta name="author" content="I Bex">        
+    <!-- social media card tags Open Graph -->
+    <meta property="og:title" content="Box Shadow Craft: Live Box Shadow Generator & Preview Tool"/>
+    <meta property="og:description" content="Box Shadow Craft: Tweak box shadows live. Get instant previews & code. Simplify your design process!"/>
+    <meta property="og:image" content="https://boxshadowcraft.netlify.app/favicon-icons/favicon-32x32.png"/>
+    <meta property="og:url" content="https://boxshadowcraft.netlify.app" />
+    <meta property="og:site_name" content="Box Shadow Craft: Live Box Shadow Generator & Preview Tool" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image:alt" content="Box Shadow Craft: Live Box Shadow Generator & Preview Tool" />
+    <!-- favicon icon links and urls -->
+    <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="./favicon-icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="./favicon-icons/favicon-16x16.png">
+    <link rel="mask-icon" href="favicon-icons/safari-pinned-tab.svg" color="#222831">
+    <meta name="msapplication-TileColor" content="#00aba9">
+    <meta name="theme-color" content="#222831">
+
+    <link rel="stylesheet" href="./style.css" />
+
+    <title>BoxShadowCraft | Live Box Shadow Editor</title>
+  </head>
+  <body>
+    <main class="main-container">
+      <section class="main-container__canvas">
+        <div class="canvas__box" id="box-canvas">
+          <a href="https://github.com/i-Bex/boxshadowcraft" class="github-project-link" target="_blank" title="Project Repository">
+            <img src="./assets/github-icon.svg" height="30" width="35" alt="github icon">
+          </a>
+          <div class="canvas__box__element" id="box-element"></div>
+        </div>
+
+        <div class="canvas__design-inputs">
+          <ul class="canvas__design-inputs__list">
+            <li class="canvas__design-inputs__property">
+              <img
+                src="./assets/height-icon.svg"
+                alt="height"
+                height="15"
+                width="15"
+                class="canvas__design-inputs__property-icon"
+              />
+              <input
+                type="number"
+                id="height"
+                class="canvas__design-inputs__value-number box-property-input"
+                required
+                aria-label="height value"
+                data-property-name="height"
+                value="200"
+              />
+              <select
+                class="canvas__design-inputs__unit box-property-unit"
+                id="height-unit"
+                aria-label="height-unit"
+                data-property-name="height"
+              >
+                <option value="px">px</option>
+                <option value="em">em</option>
+                <option value="rem">rem</option>
+              </select>
+            </li>
+            <li class="canvas__design-inputs__property">
+              <img
+                src="./assets/width-icon.svg"
+                alt="width"
+                height="15"
+                width="15"
+                class="canvas__design-inputs__property-icon"
+              />
+              <input
+                type="number"
+                id="width"
+                class="canvas__design-inputs__value-number box-property-input"
+                required
+                aria-label="width value"
+                data-property-name="width"
+                value="200"
+              />
+              <select
+                class="canvas__design-inputs__unit box-property-unit"
+                id="width-unit"
+                aria-label="width unit"
+                data-property-name="width"
+              >
+                <option value="px">px</option>
+                <option value="em">em</option>
+                <option value="rem">rem</option>
+              </select>
+            </li>
+            <li class="canvas__design-inputs__property">
+              <input
+                type="color"
+                id="element-background-color-input"
+                class="canvas__design-inputs__value-color"
+                aria-label="element background color"
+                data-property-name="backgroundColor"
+                value="#000000"
+              />
+              <span
+                class="canvas__design-inputs__value-element"
+                id="element-color-text-value"
+                data-property-name="background-color"
+                >#000000</span
+              >
+            </li>
+            <li class="canvas__design-inputs__property">
+              <input
+                type="color"
+                id="canvas-background-color"
+                class="canvas__design-inputs__value-color"
+                aria-label="canvas"
+                data-property-name="backgroundColor"
+                value="#FFFFFF"
+              />
+              <span
+                class="canvas__design-inputs__value-element"
+                id="canvas-color-text-value"
+                >#FFFFFF</span
+              >
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="main-container__shadow-list">
+        <div class="shadow-list__head">
+          <div class="shadow-list__head__title-dropdown">
+            <h2 class="shadow-list__head__title">shadow list</h2>
+            <button
+              type="button"
+              id="dropdown-shadow-list"
+              class="shadow-list__head__dropdown-btn"
+              aria-label="expand shadow list"
+            >
+              <img
+                src="./assets/dropdown-icon.svg"
+                alt="dropdown icon"
+                height="10"
+                width="15"
+              />
+            </button>
+          </div>
+          <button
+            type="button"
+            id="add-shadow-btn"
+            class="shadow-list__add-shadow-btn"
+            aria-label="add shadow"
+          >
+            <img src="./assets/add-icon.svg" alt="add icon" height="15" width="15" />
+          </button>
+        </div>
+
+        <ul class="shadow-list__shadows" id="shadow-list-container"></ul>
+      </section>
+
+      <section class="main-container__code">
+        <button type="button" id="copy-code-btn" class="code__copy-code-btn" aria-label="copy code">
+          <img
+            src="./assets/copy-code-icon.svg"
+            alt="copy icon"
+            height="26"
+            width="26"
+          />
+          <span id="copy-code-text">copy code</span>
+        </button>
+
+        <code class="code__text" id="box-shadow-list-code">
+          <pre>
+<span class="code-selector">.box-element</span> {
+  <span class="code-property">height</span>:<span class="code-value code-box-property" data-property-name="height">200</span><span class="code-unit" data-property-name="height">px</span>;
+  <span class="code-property">width</span>:<span class="code-value code-box-property" data-property-name="width">200</span><span class="code-unit" data-property-name="width">px</span>; 
+  <span class="code-property">background-color</span>:<span class="code-value code-box-property" data-property-name="backgroundColor">#000000</span>;
+  <span class="code-property">box-shadow</span>:<div class="code-property__list-container" id="shadow-code-element-container"></div>   ;
+}
+</pre>
+        </code>
+      </section>
+    </main>
+    <script src="./main.js"></script>
+  </body>
+</html>
