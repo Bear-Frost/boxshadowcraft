@@ -500,7 +500,7 @@ const renderBoxShadowCode = () => {
     })
     boxShadowListCodeContainer.append(shadowCodeElement);
   })
-  boxShadowListCodeContainer.lastChild.removeChild(boxShadowListCodeContainer.lastChild.lastChild);
+  boxShadowListCodeContainer.lastChild?.removeChild(boxShadowListCodeContainer?.lastChild?.lastChild);
 }
 
 const copyBoxShadowCode = (event) => {
