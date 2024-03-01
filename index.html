@@ -16,7 +16,7 @@
     <!-- social media card tags Open Graph -->
     <meta property="og:title" content="Box Shadow Craft: Live Box Shadow Generator & Preview Tool"/>
     <meta property="og:description" content="Box Shadow Craft: Tweak box shadows live. Get instant previews & code. Simplify your design process!"/>
-    <meta property="og:image" content="https://boxshadowcraft.netlify.app/favicon-icons/android-chrome-512x512.png"/>
+    <meta property="og:image" content="https://boxshadowcraft.netlify.app/favicon-icons/large-og-image.png"/>
     <meta property="og:url" content="https://boxshadowcraft.netlify.app" />
     <meta property="og:site_name" content="Box Shadow Craft: Live Box Shadow Generator & Preview Tool" />
     <meta name="twitter:card" content="summary_large_image" />
@@ -46,6 +46,10 @@
         <div class="canvas__design-inputs">
           <ul class="canvas__design-inputs__list">
             <li class="canvas__design-inputs__property">
+              <div>
+                <input type="range" min="0" max="200" value="200" class="canvas__design-range-inputs" id="element-range-height-value" data-property-name="height">
+              </div>
+              <div>
               <img
                 src="./assets/height-icon.svg"
                 alt="height"
@@ -72,8 +76,13 @@
                 <option value="em">em</option>
                 <option value="rem">rem</option>
               </select>
+              </div>
             </li>
             <li class="canvas__design-inputs__property">
+              <div class="canvas__design-inputs__property__range">
+                <input type="range" min="0" max="200" value="200" class="canvas__design-range-inputs" id="element-range-width-value" data-property-name="width">
+              </div>
+              <div>
               <img
                 src="./assets/width-icon.svg"
                 alt="width"
@@ -100,6 +109,7 @@
                 <option value="em">em</option>
                 <option value="rem">rem</option>
               </select>
+              </div>
             </li>
             <li class="canvas__design-inputs__property">
               <input

@@ -97,6 +97,15 @@ document
   .querySelectorAll(".box-property-unit")
   .forEach((select) => select.addEventListener("change", updateBoxUnit));
 
+const updateBoxTextInputValue = (event) => {
+  updateBox(event);
+  const textInputValueProperty = event.target.parentElement.nextElementSibling.children[1];
+  textInputValueProperty.value = event.target.value;
+}
+
+document.querySelectorAll(".canvas__design-range-inputs")
+.forEach(rangeInput => rangeInput.addEventListener("input",updateBoxTextInputValue));
+
 const canvasElement = document.getElementById("box-canvas");
 const canvasElementObject = new CanvasProperties();
 
@@ -178,7 +187,7 @@ class BoxShadowsPropertiesList {
     return this;
   }
 
-  getBoxShadowList(){
+  getBoxShadowList() {
     return this.boxShadowList;
   }
 
@@ -189,7 +198,6 @@ class BoxShadowsPropertiesList {
 }
 
 const boxShadowsPropertiesList = new BoxShadowsPropertiesList();
-
 
 const createStyledElement = (elementName, attributes = {}) => {
   const element = document.createElement(elementName);
@@ -232,7 +240,28 @@ const createBoxShadowInputValueUnit = (properties, shadowProperty) => {
   const unitList = ["px", "em", "rem"];
 
   const shadowPropertyInputsInfo = createStyledElement("li", {
-    class: "shadows__property-inputs__info",
+    class: `shadows__property-inputs__info shadows__property-inputs__info--${shadowProperty}`,
+  });
+  const propertyInputWrapper = createStyledElement("div", {
+    class: "box-shadow-property-inputs-wrapper",
+  });
+  const propertyInputs = createStyledElement("div", {
+    class:"box-shadow-inputs",
+  })
+  const shadowPropertyRangeInputWrapper = createStyledElement("div",{
+    class:"box-shadow-property-range-inputs-wrapper",
+  });
+  const shadowPropertyRangeInput = createStyledElement("input", {
+    type: "range",
+    class: "shadows__property-inputs-range__value",
+    id: `box-shadow${properties.id.value}-${shadowProperty}-value`,
+    min:"-100",
+    max:"100",
+    value:`${properties[shadowProperty].value}`,
+    "aria-label": `box shadow ${shadowProperty} value`,
+    "data-input-function": "change-box-shadow-property",
+    "data-box-shadow-id-reference": `${properties.id.value}`,
+    "data-box-shadow-property-name": `${shadowProperty}`,
   });
   const shadowPropertyInputsIcon = createStyledElement("img", {
     class: "shadows__property-inputs__icon",
@@ -245,19 +274,19 @@ const createBoxShadowInputValueUnit = (properties, shadowProperty) => {
     class: "shadows__property-inputs__value",
     type: "number",
     id: `box-shadow-${properties.id.value}-${shadowProperty}-value`,
-    value:`${currentBoxShadowProperty.value}`,
-    "aria-label":`box shadow ${shadowProperty} value`,
-    "data-input-function":"change-box-shadow-property",
-    "data-box-shadow-id-reference":`${properties.id.value}`,
-    "data-box-shadow-property-name":`${shadowProperty}`
+    value: `${currentBoxShadowProperty.value}`,
+    "aria-label": `box shadow ${shadowProperty} value`,
+    "data-input-function": "change-box-shadow-property",
+    "data-box-shadow-id-reference": `${properties.id.value}`,
+    "data-box-shadow-property-name": `${shadowProperty}`,
   });
   const shadowPropertyUnit = createStyledElement("select", {
     class: "shadows__property-inputs__unit",
     id: `box-shadow-${properties.id.value}-${shadowProperty}-unit`,
-    "aria-label":`box shadow ${shadowProperty} unit`,
-    "data-select-function":"change-box-shadow-property",
-    "data-box-shadow-id-reference":`${properties.id.value}`,
-    "data-box-shadow-property-name":`${shadowProperty}`
+    "aria-label": `box shadow ${shadowProperty} unit`,
+    "data-select-function": "change-box-shadow-property",
+    "data-box-shadow-id-reference": `${properties.id.value}`,
+    "data-box-shadow-property-name": `${shadowProperty}`,
   });
 
   for (const unit of unitList) {
@@ -266,11 +295,16 @@ const createBoxShadowInputValueUnit = (properties, shadowProperty) => {
     shadowPropertyUnit.add(optionElement);
   }
 
-  shadowPropertyInputsInfo.append(
+  propertyInputs.append(
     shadowPropertyInputsIcon,
     shadowPropertyInput,
     shadowPropertyUnit
   );
+
+  shadowPropertyRangeInputWrapper.append(shadowPropertyRangeInput);
+  propertyInputWrapper.append(propertyInputs);
+
+  shadowPropertyInputsInfo.append(shadowPropertyRangeInputWrapper,propertyInputWrapper);
 
   return shadowPropertyInputsInfo;
 };
@@ -278,7 +312,7 @@ const createBoxShadowInputValueUnit = (properties, shadowProperty) => {
 const createBoxShadowInputColorValue = (properties, shadowProperty) => {
   const currentBoxShadowProperty = properties[shadowProperty];
   const boxShadowsPropertyInfo = createStyledElement("li", {
-    class: "shadows__property-inputs__info",
+    class: `shadows__property-inputs__info shadows__property-inputs__info--${shadowProperty}`,
   });
   const boxShadowPropertyInputsColorValue = createStyledElement("span", {
     class: "shadows__property-inputs__value-colors",
@@ -286,10 +320,10 @@ const createBoxShadowInputColorValue = (properties, shadowProperty) => {
   const boxShadowPropertyInfoInputColor = createStyledElement("input", {
     class: "shadows__property-inputs__colors-value",
     type: "color",
-    "aria-label":`box shadow ${shadowProperty} value`,
-    "data-input-function":"change-box-shadow-property",
-    "data-box-shadow-id-reference":`${properties.id.value}`,
-    "data-box-shadow-property-name":`${shadowProperty}`
+    "aria-label": `box shadow ${shadowProperty} value`,
+    "data-input-function": "change-box-shadow-property",
+    "data-box-shadow-id-reference": `${properties.id.value}`,
+    "data-box-shadow-property-name": `${shadowProperty}`,
   });
 
   boxShadowPropertyInputsColorValue.textContent =
@@ -306,15 +340,15 @@ const createBoxShadowInputColorValue = (properties, shadowProperty) => {
 const createBoxShadowInputCheckValue = (properties, shadowProperty) => {
   const currentBoxShadowProperty = properties[shadowProperty];
   const boxShadowsPropertyInfo = createStyledElement("li", {
-    class: "shadows__property-inputs__info",
+    class: `shadows__property-inputs__info shadows__property-inputs__info--${shadowProperty}`,
   });
   const shadowPropertyInputCheckBox = createStyledElement("input", {
     type: "checkbox",
     class: "shadows__property-inputs__checkbox",
     id: `box-shadow-${properties.id.value}-inset-value`,
-    "data-input-function":"change-box-shadow-property",
-    "data-box-shadow-id-reference":`${properties.id.value}`,
-    "data-box-shadow-property-name":`${shadowProperty}`
+    "data-input-function": "change-box-shadow-property",
+    "data-box-shadow-id-reference": `${properties.id.value}`,
+    "data-box-shadow-property-name": `${shadowProperty}`,
   });
   const shadowPropertyInputCheckBoxLabel = createStyledElement("label", {
     class: "shadows__property-inputs__checkbox-label",
@@ -344,31 +378,31 @@ const createBoxShadowInfoElement = (properties) => {
     class: "shadows__info__name",
   });
   const shadowDropDownOptionsBtn = createStyledElement("button", {
-    type:"button",
+    type: "button",
     class: "shadows__info__options__expand",
     "aria-label": "show shadow property list",
-    "data-button-function":"expand-shadow-options"
+    "data-button-function": "expand-shadow-options",
   });
   const shadowDropDownOptionIcon = createStyledElement("img", {
     src: "./assets/dropdown-icon.svg",
     alt: "dropdown icon",
     height: "10",
     width: "15",
-    class:"options__expand__dropdown-icon",
+    class: "options__expand__dropdown-icon",
   });
   const shadowRemoveOptionBtn = createStyledElement("button", {
-    type:"button",
+    type: "button",
     class: "shadows__info__options__remove",
     "aria-label": "delete-shadow",
-    "data-button-function":"delete-shadow",
-    "data-shadow-id-reference":`${properties.id.value}`
+    "data-button-function": "delete-shadow",
+    "data-shadow-id-reference": `${properties.id.value}`,
   });
   const shadowsRemoveOptionIcon = createStyledElement("img", {
     src: "./assets/minus-icon.svg",
     alt: "minus icon",
     height: "4",
     width: "15",
-    class:"options__remove__minus-icon",
+    class: "options__remove__minus-icon",
   });
   const shadowPropertyInputs = createStyledElement("ul", {
     class: "shadows__property-inputs",
@@ -397,7 +431,9 @@ const createShadowListElement = () => {
   renderBoxShadowStyle();
 };
 
-document.getElementById("add-shadow-btn").addEventListener("click", createShadowListElement);
+document
+  .getElementById("add-shadow-btn")
+  .addEventListener("click", createShadowListElement);
 
 const expandShadowListBtn = document.getElementById("dropdown-shadow-list");
 const expandShadowList = (event) => {
@@ -420,109 +456,182 @@ const handleClickEventInShadowList = (event) => {
     shadowListContainer.classList.toggle("shadows__info--active");
   };
 
-  const deleteShadow  = () => {
-    const shadowListParentContainer = targetElement.parentElement.parentElement.parentElement;
-    const shadowList = targetElement.parentElement.parentElement;  
+  const deleteShadow = () => {
+    const shadowListParentContainer =
+      targetElement.parentElement.parentElement.parentElement;
+    const shadowList = targetElement.parentElement.parentElement;
     shadowListParentContainer.removeChild(shadowList);
-    boxShadowsPropertiesList.deleteBoxShadow(Number(targetElement.dataset.shadowIdReference));
+    boxShadowsPropertiesList.deleteBoxShadow(
+      Number(targetElement.dataset.shadowIdReference)
+    );
     renderBoxShadowCode();
     renderBoxShadowStyle();
   };
 
-  if(targetElement.type === "button" && event.type === "click" && targetElement.dataset.buttonFunction === "expand-shadow-options"){
+  if (
+    targetElement.type === "button" &&
+    event.type === "click" &&
+    targetElement.dataset.buttonFunction === "expand-shadow-options"
+  ) {
     expandShadowOptions();
   }
-  if(targetElement.type === "button" && event.type === "click" && targetElement.dataset.buttonFunction ===  "delete-shadow"){
+  if (
+    targetElement.type === "button" &&
+    event.type === "click" &&
+    targetElement.dataset.buttonFunction === "delete-shadow"
+  ) {
     deleteShadow();
-  };
-}
+  }
+};
 
 const handleInputEventInShadowList = (event) => {
   const targetElement = event.target;
-  const changePropertyValueUnitOfBoxShadow = (newValue,valueOrUnit) => {
-    const targetElementShadowIdReference = Number(targetElement.dataset.boxShadowIdReference);
-    const targetElementShadowPropertyNameReference = targetElement.dataset.boxShadowPropertyName;
-    boxShadowsPropertiesList.editBoxShadowPropertiesUnitValue(targetElementShadowIdReference,targetElementShadowPropertyNameReference,newValue,valueOrUnit);
+  const changePropertyValueUnitOfBoxShadow = (newValue, valueOrUnit) => {
+    const targetElementShadowIdReference = Number(
+      targetElement.dataset.boxShadowIdReference
+    );
+    const targetElementShadowPropertyNameReference =
+      targetElement.dataset.boxShadowPropertyName;
+    boxShadowsPropertiesList.editBoxShadowPropertiesUnitValue(
+      targetElementShadowIdReference,
+      targetElementShadowPropertyNameReference,
+      newValue,
+      valueOrUnit
+    );
     renderBoxShadowCode();
     renderBoxShadowStyle();
-  }
-  const updateColorTextValueElement = (newValue = "#000000") => {
-    targetElement.nextElementSibling.textContent = newValue;
+  };
+  const updateColorTextValueElement = () => {
+    targetElement.nextElementSibling.textContent = targetElement.value;
+  };
+  const updatePropertyInputValue = () => {
+    const inputPropertyElement = targetElement.parentElement.nextElementSibling.children[0].children[1];
+    inputPropertyElement.value = targetElement.value;
   }
 
-  if(targetElement.type === "number" && event.type === "input" && targetElement.dataset.inputFunction === "change-box-shadow-property") {
-    changePropertyValueUnitOfBoxShadow(targetElement.value || 0,"value");
-  }
-  
-  if(targetElement.type === "color" && event.type === "input" && targetElement.dataset.inputFunction === "change-box-shadow-property"){
+  if(targetElement.type === "range" && event.type === "input" && targetElement.dataset.inputFunction === "change-box-shadow-property") {    
     changePropertyValueUnitOfBoxShadow(targetElement.value,"value");
-    updateColorTextValueElement(targetElement.value); 
+    updatePropertyInputValue();
+  }
+  if (
+    targetElement.type === "number" &&
+    event.type === "input" &&
+    targetElement.dataset.inputFunction === "change-box-shadow-property"
+  ) {
+    changePropertyValueUnitOfBoxShadow(targetElement.value || 0, "value");
   }
 
-  if(targetElement.type === "checkbox" && event.type === "click" && targetElement.dataset.inputFunction === "change-box-shadow-property"){
-    changePropertyValueUnitOfBoxShadow(targetElement.checked,"value");
-  }  
-  if(targetElement.type === "select-one" && event.type === "change" && targetElement.dataset.selectFunction === "change-box-shadow-property"){
-    changePropertyValueUnitOfBoxShadow(targetElement.value,"unit");
+  if (
+    targetElement.type === "color" &&
+    event.type === "input" &&
+    targetElement.dataset.inputFunction === "change-box-shadow-property"
+  ) {
+    changePropertyValueUnitOfBoxShadow(targetElement.value, "value");
+    updateColorTextValueElement();
   }
-}
+
+  if (
+    targetElement.type === "checkbox" &&
+    event.type === "click" &&
+    targetElement.dataset.inputFunction === "change-box-shadow-property"
+  ) {
+    changePropertyValueUnitOfBoxShadow(targetElement.checked, "value");
+  }
+  if (
+    targetElement.type === "select-one" &&
+    event.type === "change" &&
+    targetElement.dataset.selectFunction === "change-box-shadow-property"
+  ) {
+    changePropertyValueUnitOfBoxShadow(targetElement.value, "unit");
+  }
+};
 
 const handleDelegateEvent = (event) => {
   handleClickEventInShadowList(event);
   handleInputEventInShadowList(event);
-}
+};
 
-document.getElementById("shadow-list-container").addEventListener("click",handleDelegateEvent);
-document.getElementById("shadow-list-container").addEventListener("input",handleDelegateEvent);
-document.getElementById("shadow-list-container").addEventListener("change",handleDelegateEvent);
+document
+  .getElementById("shadow-list-container")
+  .addEventListener("click", handleDelegateEvent);
+document
+  .getElementById("shadow-list-container")
+  .addEventListener("input", handleDelegateEvent);
+document
+  .getElementById("shadow-list-container")
+  .addEventListener("change", handleDelegateEvent);
 
 const renderBoxShadowCode = () => {
   const boxShadowList = boxShadowsPropertiesList.getBoxShadowList();
-  const boxShadowListCodeContainer = document.getElementById("shadow-code-element-container");
-  const boxShadowListProperty = ["x","y","blur","spread","color","inset"];
-  while(boxShadowListCodeContainer.firstChild){
-    boxShadowListCodeContainer.removeChild(boxShadowListCodeContainer.firstChild);
+  const boxShadowListCodeContainer = document.getElementById(
+    "shadow-code-element-container"
+  );
+  const boxShadowListProperty = ["x", "y", "blur", "spread", "color", "inset"];
+  while (boxShadowListCodeContainer.firstChild) {
+    boxShadowListCodeContainer.removeChild(
+      boxShadowListCodeContainer.firstChild
+    );
   }
-  boxShadowList.forEach(shadow => {
+  boxShadowList.forEach((shadow) => {
     const shadowCodeElement = document.createElement("p");
-    boxShadowListProperty.forEach(boxShadowProperty => {
-      let shadowCodePropertyValue = shadow[boxShadowProperty].value; 
-      const shadowCodePropertyUnit = (shadow[boxShadowProperty].unit !== null) ? shadow[boxShadowProperty].unit : "";
-      const shadowCodeValueElement = createStyledElement("span",{class:"code-value"});
-      if(typeof shadowCodePropertyValue === "boolean" && shadowCodePropertyValue === true){
+    boxShadowListProperty.forEach((boxShadowProperty) => {
+      let shadowCodePropertyValue = shadow[boxShadowProperty].value;
+      const shadowCodePropertyUnit =
+        shadow[boxShadowProperty].unit !== null
+          ? shadow[boxShadowProperty].unit
+          : "";
+      const shadowCodeValueElement = createStyledElement("span", {
+        class: "code-value",
+      });
+      if (
+        typeof shadowCodePropertyValue === "boolean" &&
+        shadowCodePropertyValue === true
+      ) {
         shadowCodePropertyValue = "inset,";
-      }
-      else if(typeof shadowCodePropertyValue === "boolean" && shadowCodePropertyValue === false){
+      } else if (
+        typeof shadowCodePropertyValue === "boolean" &&
+        shadowCodePropertyValue === false
+      ) {
         shadowCodePropertyValue = ",";
       }
       shadowCodeValueElement.textContent = `${shadowCodePropertyValue}${shadowCodePropertyUnit} `;
       shadowCodeElement.append(shadowCodeValueElement);
-    })
+    });
     boxShadowListCodeContainer.append(shadowCodeElement);
-  })
-  boxShadowListCodeContainer.lastChild?.removeChild(boxShadowListCodeContainer?.lastChild?.lastChild);
-}
+  });
+  if(boxShadowListCodeContainer?.lastChild?.lastChild.textContent ===  "inset, "){
+    const lastBoxShadowProperty = boxShadowListCodeContainer?.lastChild?.lastChild;
+    lastBoxShadowProperty.textContent = "inset";
+    return;
+  }
+  boxShadowListCodeContainer.lastChild?.removeChild(
+    boxShadowListCodeContainer?.lastChild?.lastChild
+  );
+};
 
 const copyBoxShadowCode = (event) => {
   const codeToCopy = document.getElementById("box-shadow-list-code").innerText;
   const copyCodeButtonText = document.getElementById("copy-code-text");
-  navigator.clipboard.writeText(codeToCopy)
-  .then(() => { 
-    copyCodeButtonText.textContent = "copied !"
-    setTimeout(() => copyCodeButtonText.textContent = "copy code",2000);
-  })
-  .catch(err => {
-    console.log(err);
-  })
-}
-document.getElementById("copy-code-btn").addEventListener("click",copyBoxShadowCode);
+  navigator.clipboard
+    .writeText(codeToCopy)
+    .then(() => {
+      copyCodeButtonText.textContent = "copied !";
+      setTimeout(() => (copyCodeButtonText.textContent = "copy code"), 2000);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+document
+  .getElementById("copy-code-btn")
+  .addEventListener("click", copyBoxShadowCode);
 
 const renderBoxShadowStyle = () => {
   const boxShadowList = boxShadowsPropertiesList.getBoxShadowList();
-  const boxShadowListStyleValue = boxShadowList.map(shadow => {
-    const {x,y,blur,spread,color,inset} = shadow;
-    const insetValue = (inset.value) ? "inset" : "";
-    return `${x.value}${x.unit} ${y.value}${y.unit} ${blur.value}${blur.unit} ${spread.value}${spread.unit} ${color.value} ${insetValue}`
-  })
+  const boxShadowListStyleValue = boxShadowList.map((shadow) => {
+    const { x, y, blur, spread, color, inset } = shadow;
+    const insetValue = inset.value ? "inset" : "";
+    return `${x.value}${x.unit} ${y.value}${y.unit} ${blur.value}${blur.unit} ${spread.value}${spread.unit} ${color.value} ${insetValue}`;
+  });
   boxElement.style.boxShadow = boxShadowListStyleValue.join(",");
-}
+};
